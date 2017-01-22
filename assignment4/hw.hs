@@ -1,4 +1,6 @@
 
+import Data.List
+
 --Exercise 1
 fun1 :: [Integer] -> Integer
 fun1 [] = 1
@@ -59,6 +61,19 @@ insertElem x (Node height left value right)
 xor :: [Bool] -> Bool
 xor xs = odd $ foldr (\x y -> if x then y+1 else y) 0 xs
 
+map' :: (a->b) -> [a] -> [b]
+map' f xs = foldr (\x ys -> (f x) : ys) [] xs
+
+
+--Exercise 4
+sieveSundaram :: Integer -> [Integer]
+sieveSundaram n = map(\i -> i * 2 + 1) $ [1..n] \\ (map(\(i, j) -> i + j + 2 * i * j)
+                   $ filter(\(i, j) -> i + j + 2 * i * j <= n)
+                   $ cartProd[1..n][1..n])
+
+
+cartProd :: [a] -> [b] -> [(a, b)]
+cartProd xs ys = [(x,y) | x <- xs, y <- ys]
 
 
 
