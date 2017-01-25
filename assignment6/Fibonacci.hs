@@ -1,3 +1,5 @@
+{-# LANGUAGE FlexibleInstances #-}
+{-# OPTIONS_GHC -fno-warn-missing-methods #-}
 
 module Fibonacci where
 
@@ -27,7 +29,7 @@ testFibs2 n = take n fibs2
 data Stream a = Cons a (Stream a)
 
 instance Show a => Show (Stream a) where
-    show xs = show (take 50 $ streamToList xs)
+    show xs = show (take 25 $ streamToList xs)
 
 streamToList :: Stream a -> [a]
 streamToList (Cons x xs) = x : (streamToList xs)
@@ -52,6 +54,25 @@ ruler = ruler' 0
 ruler' :: Integer -> Stream Integer
 ruler' x = interleaveStreams (streamRepeat x) (ruler'(x+1))
 
+--this works
 interleaveStreams :: Stream a -> Stream a -> Stream a
 interleaveStreams (Cons x xs) ys = (Cons x (interleaveStreams ys xs))
+
+--this doesn't work
+interleaveStreams' :: Stream a -> Stream a -> Stream a
+interleaveStreams' (Cons x xs) (Cons y ys) = (Cons x (Cons y (interleaveStreams xs ys)))
+
+--Exercise 6
+x :: Stream Integer
+x = Cons 0 (Cons 1 x)
+
+instance Num(Stream Integer) where
+    fromInteger n = Cons n (streamRepeat 0)
+    negate (Cons n ns) = Cons (-n) (negate ns)
+    (+) (Cons a as) (Cons b bs) = Cons (a + b) (as + bs)
+    --(*) (Cons a as) (Cons b bs) = (a * b) + ()
+
+
+
+
 
