@@ -64,15 +64,37 @@ interleaveStreams' (Cons x xs) (Cons y ys) = (Cons x (Cons y (interleaveStreams 
 
 --Exercise 6
 x :: Stream Integer
-x = Cons 0 (Cons 1 x)
+x = Cons 0 (Cons 1 $ streamRepeat 0)
 
 instance Num(Stream Integer) where
     fromInteger n = Cons n (streamRepeat 0)
     negate (Cons n ns) = Cons (-n) (negate ns)
     (+) (Cons a as) (Cons b bs) = Cons (a + b) (as + bs)
-    --(*) (Cons a as) (Cons b bs) = (a * b) + ()
+    (*) (Cons a as) s2@(Cons b bs) = Cons (a * b) ((streamMap (*a) bs) + (as * s2))
+
+instance Fractional(Stream Integer) where
+    (/) s1@(Cons a as) s2@(Cons b bs) = Cons (a `div` b) (streamMap (`div` b) (as - (s1 / s2) * bs))
+
+fibs3 :: Stream Integer
+fibs3 = x / (1 - x - (x^2))
+
+--Exercise 7
+data Matrix = Mat Integer Integer Integer Integer
+    deriving (Show)
+
+instance Num(Matrix) where
+    (*) (Mat a11 a12 a21 a22) (Mat b11 b12 b21 b22) = Mat (a11 * b11 + a12 * b12)
+                                                          (a11 * b12 + a12 * b22)
+                                                          (a21 * b11 + a22 * b21)
+                                                          (a21 * b12 + a22 * b22)
+
+fib4 :: Integer -> Integer
+fib4 0 = 0
+fib4 x = fibMatrix $ (Mat 1 1 1 0) ^ x
 
 
+fibMatrix :: Matrix -> Integer
+fibMatrix (Mat _ x _ _) = x
 
-
-
+fibs4 :: Integer -> [Integer]
+fibs4 n = map (fib4) [0..n]
