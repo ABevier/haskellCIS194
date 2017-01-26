@@ -4,6 +4,8 @@ module Permute where
 --permutations xs = permutations' xs
 
 permute :: String -> [String]
+permute [] = []
+permute (x:[]) = [[x]]
 permute xs = [ n:ys | (n, ns) <- subStringTuple xs, ys <- permute ns]
 
 subStringTuple :: String -> [(Char, String)]
