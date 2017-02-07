@@ -76,10 +76,13 @@ maxFun employees = moreFun `uncurry` (treeFold nextLevel (mempty, mempty) employ
 
 ---Exercise 5
 main :: IO()
-main = readFile "company.txt" >>= (putStrLn . displayTree . read)
+main = readFile "company.txt" >>= (putStrLn . displayGL . maxFun . read)
 
 displayTree :: Tree Employee -> String
 displayTree tree = show $ maxFun tree
 
+displayGL :: GuestList -> String
+displayGL (GL es f) = "Total fun: " ++ show f ++ "\n" ++
+                        foldr (\x acc -> x ++ "\n" ++ acc) [] (sort $ map (\x -> empName x) es)
 
 
